@@ -1,142 +1,39 @@
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-<base href="https://rubiks-haiku-cube-3d.com/">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cubo 3D de Haiku Interactivo</title>
-<style>
-  /* ... [Estilos anteriores se mantienen igual] ... */
-  
-  /* Nuevos estilos para mejorar la experiencia táctil */
-  .word-cell {
-    touch-action: none; /* Previene el scroll mientras se arrastra */
-    -webkit-tap-highlight-color: transparent; /* Elimina el highlight al tocar en iOS */
-  }
-  
-  /* Ajustes para pantallas pequeñas */
-  @media (max-width: 768px) {
-    #cube-container {
-      width: 250px;
-      height: 250px;
-    }
-    
-    .word-cell {
-      font-size: 12px;
-      padding: 3px;
-    }
-    
-    .controls {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    #instructions {
-      font-size: 14px;
-      width: 90%;
-      max-width: 300px;
-    }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cubo 3D de Haiku Interactivo</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<!-- ... [El HTML se mantiene igual] ... -->
+    <div id="instructions">
+        Use las flechas del teclado o deslice el dedo para rotar el cubo<br>
+        Arrastre las palabras para crear su poema<br>
+        En dispositivos táctiles, mantenga presionado y arrastre las palabras
+    </div>
 
-<script>
-  const cube = document.getElementById('cube');
-  const poemDisplay = document.getElementById('poem-display');
-  const instructions = document.getElementById('instructions');
-  let rotationX = -30;
-  let rotationY = 45;
-  let isDragging = false;
-  let draggedCell = null;
-  let startX, startY;
-  let lastX, lastY;
-  let isTouching = false;
+    <div id="cube-container">
+        <div id="cube">
+            <div id="front" class="face"></div>
+            <div id="back" class="face"></div>
+            <div id="right" class="face"></div>
+            <div id="left" class="face"></div>
+            <div id="top" class="face"></div>
+            <div id="bottom" class="face"></div>
+        </div>
+    </div>
 
-  // Funciones existentes...
+    <div id="poem-display">
+        <p>Arrastre palabras aquí para crear su haiku</p>
+    </div>
 
-  // Nueva función para manejar el inicio del toque
-  function handleTouchStart(e) {
-    if (e.target.classList.contains('word-cell')) {
-      e.preventDefault();
-      isTouching = true;
-      draggedCell = e.target;
-      draggedCell.classList.add('dragging');
-      
-      const touch = e.touches[0];
-      startX = touch.clientX;
-      startY = touch.clientY;
-      lastX = startX;
-      lastY = startY;
-    }
-  }
+    <div class="controls">
+        <button onclick="resetCube()">Resetear Cubo</button>
+        <button onclick="shuffleWords()">Mezclar Palabras</button>
+        <button onclick="clearPoem()">Borrar Haiku</button>
+    </div>
 
-  // Nueva función para manejar el movimiento del toque
-  function handleTouchMove(e) {
-    if (isTouching) {
-      e.preventDefault();
-      const touch = e.touches[0];
-      
-      // Si estamos arrastrando una palabra
-      if (draggedCell) {
-        const currentX = touch.clientX;
-        const currentY = touch.clientY;
-        lastX = currentX;
-        lastY = currentY;
-      } else {
-        // Si estamos rotando el cubo
-        const deltaX = touch.clientX - startX;
-        const deltaY = touch.clientY - startY;
-        
-        rotationY += deltaX * 0.5;
-        rotationX += deltaY * 0.5;
-        
-        updateCubeRotation();
-        
-        startX = touch.clientX;
-        startY = touch.clientY;
-      }
-    }
-  }
-
-  // Nueva función para manejar el fin del toque
-  function handleTouchEnd(e) {
-    if (isTouching && draggedCell) {
-      e.preventDefault();
-      const endTouch = document.elementFromPoint(lastX, lastY);
-      draggedCell.classList.remove('dragging');
-      
-      if (endTouch === poemDisplay || poemDisplay.contains(endTouch)) {
-        addWordToPoem(draggedCell.textContent);
-      } else if (endTouch && endTouch.classList.contains('word-cell') && endTouch !== draggedCell) {
-        swapCells(draggedCell, endTouch);
-      }
-      
-      draggedCell = null;
-    }
-    isTouching = false;
-  }
-
-  // Agregar los event listeners para touch
-  document.addEventListener('touchstart', handleTouchStart, { passive: false });
-  document.addEventListener('touchmove', handleTouchMove, { passive: false });
-  document.addEventListener('touchend', handleTouchEnd, { passive: false });
-
-  // Mantener los event listeners existentes para mouse
-  document.addEventListener('mousedown', startDragging);
-  document.addEventListener('mouseup', stopDragging);
-  document.addEventListener('mousemove', dragCell);
-
-  // Actualizar las instrucciones para incluir gestos táctiles
-  instructions.innerHTML = `
-    Use las flechas del teclado o deslice el dedo para rotar el cubo<br>
-    Arrastre las palabras para crear su poema<br>
-    En dispositivos táctiles, mantenga presionado y arrastre las palabras
-  `;
-
-  // ... [El resto del código se mantiene igual] ...
-</script>
+    <script src="script.js"></script>
 </body>
 </html>
