@@ -19,19 +19,41 @@
         }
 
         body {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .header {
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f0f0f0;
-            min-height: 100vh;
-            position: relative;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        #instructions, #poem-display {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #cube-container {
             width: 300px;
             height: 300px;
             perspective: 1000px;
-            margin-top: 50px;
+            transform-style: preserve-3d;
         }
 
         #cube {
@@ -39,8 +61,7 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transform: rotateX(-30deg) rotateY(45deg);
-            transition: transform 0.5s ease;
+            transition: transform 0.1s linear;
         }
 
         .face {
@@ -52,6 +73,7 @@
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
             backface-visibility: visible;
+            background-color: rgba(255, 255, 255, 0.9);
         }
 
         .word-cell {
@@ -74,7 +96,8 @@
             z-index: 1000;
         }
 
-        #front  { transform: rotateY(0deg) translateZ(150px); background-color: rgba(255, 0, 0, 0.3); }
+        /* Posicionamiento exacto de las caras */
+        #front  { transform: translateZ(150px); background-color: rgba(255, 0, 0, 0.3); }
         #back   { transform: rotateY(180deg) translateZ(150px); background-color: rgba(255, 165, 0, 0.3); }
         #right  { transform: rotateY(90deg) translateZ(150px); background-color: rgba(0, 0, 255, 0.3); }
         #left   { transform: rotateY(-90deg) translateZ(150px); background-color: rgba(0, 255, 0, 0.3); }
@@ -82,18 +105,14 @@
         #bottom { transform: rotateX(-90deg) translateZ(150px); background-color: rgba(255, 255, 0, 0.3); }
 
         .controls {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
+            justify-content: center;
             gap: 10px;
             flex-wrap: wrap;
-            justify-content: center;
         }
 
         button {
-            padding: 10px 15px;
+            padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
             background-color: #4CAF50;
@@ -107,38 +126,6 @@
             background-color: #45a049;
         }
 
-        #instructions {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 1000;
-            width: 90%;
-            max-width: 600px;
-        }
-
-        #poem-display {
-            position: fixed;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            font-size: 18px;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 5px;
-            width: 90%;
-            max-width: 400px;
-            min-height: 60px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
         @media (max-width: 768px) {
             #cube-container {
                 width: 250px;
@@ -147,65 +134,52 @@
             
             .word-cell {
                 font-size: 12px;
-                padding: 3px;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            #instructions {
-                font-size: 14px;
-            }
-
-            button {
-                width: 200px;
             }
         }
     </style>
 </head>
 <body>
-    <div id="instructions">
-        Use las flechas del teclado o deslice el dedo para rotar el cubo<br>
-        Arrastre las palabras para crear su poema<br>
-        En dispositivos táctiles, mantenga presionado y arrastre las palabras
+    <div class="header">
+        <div id="instructions">
+            Use las flechas del teclado o deslice el dedo para rotar el cubo<br>
+            Arrastre las palabras para crear su poema
+        </div>
+        <div id="poem-display">
+            <p>Arrastre palabras aquí para crear su haiku</p>
+        </div>
     </div>
 
-    <div id="poem-display">
-        <p>Arrastre palabras aquí para crear su haiku</p>
-    </div>
-
-    <div id="cube-container">
-        <div id="cube">
-            <div id="front" class="face"></div>
-            <div id="back" class="face"></div>
-            <div id="right" class="face"></div>
-            <div id="left" class="face"></div>
-            <div id="top" class="face"></div>
-            <div id="bottom" class="face"></div>
+    <div class="main-content">
+        <div id="cube-container">
+            <div id="cube">
+                <div id="front" class="face"></div>
+                <div id="back" class="face"></div>
+                <div id="right" class="face"></div>
+                <div id="left" class="face"></div>
+                <div id="top" class="face"></div>
+                <div id="bottom" class="face"></div>
+            </div>
         </div>
     </div>
 
     <div class="controls">
-        <button onclick="resetCube()">Resetear Cubo</button>
-        <button onclick="shuffleWords()">Mezclar Palabras</button>
-        <button onclick="clearPoem()">Borrar Haiku</button>
+        <button onclick="resetCube()">Resetear</button>
+        <button onclick="shuffleWords()">Mezclar</button>
+        <button onclick="clearPoem()">Borrar</button>
     </div>
 
     <script>
-        // Variables globales
         const cube = document.getElementById('cube');
         const poemDisplay = document.getElementById('poem-display');
         let rotationX = -30;
         let rotationY = 45;
+        let rotationZ = 0;
         let isDragging = false;
         let draggedCell = null;
         let startX, startY;
         let lastX, lastY;
         let isTouching = false;
 
-        // Array de haikus
         const haikus = [
             ['viejo', 'estanque', 'una', 'rana', 'salta', 'el', 'sonido', 'del', 'agua'],
             ['brisa', 'de', 'primavera', 'el', 'sauce', 'acaricia', 'el', 'agua', 'lenta'],
@@ -215,9 +189,108 @@
             ['hojas', 'caen', 'silenciosas', 'el', 'viento', 'susurra', 'secretos', 'del', 'bosque']
         ];
 
-        // Funciones
         function updateCubeRotation() {
-            cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+            cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) rotateZ(${rotationZ}deg)`;
+        }
+
+        function handleMouseDown(e) {
+            if (e.target.classList.contains('word-cell')) {
+                isDragging = true;
+                draggedCell = e.target;
+                draggedCell.classList.add('dragging');
+            } else {
+                startX = e.clientX;
+                startY = e.clientY;
+            }
+        }
+
+        function handleMouseMove(e) {
+            if (isDragging) {
+                e.preventDefault();
+            } else if (e.buttons === 1) {
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+                
+                if (e.shiftKey) {
+                    rotationZ += deltaX * 0.5;
+                } else {
+                    rotationY += deltaX * 0.5;
+                    rotationX += deltaY * 0.5;
+                }
+                
+                updateCubeRotation();
+                startX = e.clientX;
+                startY = e.clientY;
+            }
+        }
+
+        function handleMouseUp(e) {
+            if (isDragging) {
+                isDragging = false;
+                draggedCell.classList.remove('dragging');
+                const dropTarget = document.elementFromPoint(e.clientX, e.clientY);
+                if (dropTarget === poemDisplay || poemDisplay.contains(dropTarget)) {
+                    addWordToPoem(draggedCell.textContent);
+                } else if (dropTarget && dropTarget.classList.contains('word-cell') && dropTarget !== draggedCell) {
+                    swapCells(draggedCell, dropTarget);
+                }
+                draggedCell = null;
+            }
+        }
+
+        function handleTouchStart(e) {
+            if (e.target.classList.contains('word-cell')) {
+                e.preventDefault();
+                isTouching = true;
+                draggedCell = e.target;
+                draggedCell.classList.add('dragging');
+            }
+            const touch = e.touches[0];
+            startX = touch.clientX;
+            startY = touch.clientY;
+            lastX = startX;
+            lastY = startY;
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            
+            if (draggedCell) {
+                lastX = touch.clientX;
+                lastY = touch.clientY;
+            } else {
+                const deltaX = touch.clientX - startX;
+                const deltaY = touch.clientY - startY;
+                
+                if (e.touches.length > 1) {
+                    rotationZ += deltaX * 0.5;
+                } else {
+                    rotationY += deltaX * 0.5;
+                    rotationX += deltaY * 0.5;
+                }
+                
+                updateCubeRotation();
+                startX = touch.clientX;
+                startY = touch.clientY;
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (draggedCell) {
+                e.preventDefault();
+                const endTouch = document.elementFromPoint(lastX, lastY);
+                draggedCell.classList.remove('dragging');
+                
+                if (endTouch === poemDisplay || poemDisplay.contains(endTouch)) {
+                    addWordToPoem(draggedCell.textContent);
+                } else if (endTouch && endTouch.classList.contains('word-cell') && endTouch !== draggedCell) {
+                    swapCells(draggedCell, endTouch);
+                }
+                
+                draggedCell = null;
+            }
+            isTouching = false;
         }
 
         function initializeCube() {
@@ -237,6 +310,7 @@
         function resetCube() {
             rotationX = -30;
             rotationY = 45;
+            rotationZ = 0;
             updateCubeRotation();
             initializeCube();
         }
@@ -255,8 +329,10 @@
             });
         }
 
-        function clearPoem() {
-            poemDisplay.innerHTML = '<p>Arrastre palabras aquí para crear su haiku</p>';
+        function swapCells(cell1, cell2) {
+            const temp = cell1.textContent;
+            cell1.textContent = cell2.textContent;
+            cell2.textContent = temp;
         }
 
         function addWordToPoem(word) {
@@ -268,95 +344,8 @@
             poemDisplay.appendChild(wordSpan);
         }
 
-        function swapCells(cell1, cell2) {
-            const temp = cell1.textContent;
-            cell1.textContent = cell2.textContent;
-            cell2.textContent = temp;
-        }
-
-        // Manejadores de eventos para mouse
-        function handleMouseDown(e) {
-            if (e.target.classList.contains('word-cell')) {
-                isDragging = true;
-                draggedCell = e.target;
-                draggedCell.classList.add('dragging');
-            }
-        }
-
-        function handleMouseMove(e) {
-            if (isDragging) {
-                e.preventDefault();
-            }
-        }
-
-        function handleMouseUp(e) {
-            if (isDragging) {
-                isDragging = false;
-                draggedCell.classList.remove('dragging');
-                const dropTarget = document.elementFromPoint(e.clientX, e.clientY);
-                if (dropTarget === poemDisplay || poemDisplay.contains(dropTarget)) {
-                    addWordToPoem(draggedCell.textContent);
-                } else if (dropTarget && dropTarget.classList.contains('word-cell') && dropTarget !== draggedCell) {
-                    swapCells(draggedCell, dropTarget);
-                }
-                draggedCell = null;
-            }
-        }
-
-        // Manejadores de eventos para touch
-        function handleTouchStart(e) {
-            if (e.target.classList.contains('word-cell')) {
-                e.preventDefault();
-                isTouching = true;
-                draggedCell = e.target;
-                draggedCell.classList.add('dragging');
-                
-                const touch = e.touches[0];
-                startX = touch.clientX;
-                startY = touch.clientY;
-                lastX = startX;
-                lastY = startY;
-            }
-        }
-
-        function handleTouchMove(e) {
-            if (isTouching) {
-                e.preventDefault();
-                const touch = e.touches[0];
-                
-                if (draggedCell) {
-                    lastX = touch.clientX;
-                    lastY = touch.clientY;
-                } else {
-                    const deltaX = touch.clientX - startX;
-                    const deltaY = touch.clientY - startY;
-                    
-                    rotationY += deltaX * 0.5;
-                    rotationX += deltaY * 0.5;
-                    
-                    updateCubeRotation();
-                    
-                    startX = touch.clientX;
-                    startY = touch.clientY;
-                }
-            }
-        }
-
-        function handleTouchEnd(e) {
-            if (isTouching && draggedCell) {
-                e.preventDefault();
-                const endTouch = document.elementFromPoint(lastX, lastY);
-                draggedCell.classList.remove('dragging');
-                
-                if (endTouch === poemDisplay || poemDisplay.contains(endTouch)) {
-                    addWordToPoem(draggedCell.textContent);
-                } else if (endTouch && endTouch.classList.contains('word-cell') && endTouch !== draggedCell) {
-                    swapCells(draggedCell, endTouch);
-                }
-                
-                draggedCell = null;
-            }
-            isTouching = false;
+        function clearPoem() {
+            poemDisplay.innerHTML = '<p>Arrastre palabras aquí para crear su haiku</p>';
         }
 
         // Event Listeners
